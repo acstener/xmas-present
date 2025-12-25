@@ -556,6 +556,144 @@
         transform: translate(-50%, -50%) scale(2);
       }
     }
+
+    /* MOBILE RESPONSIVE */
+    @media (max-width: 500px) {
+      .container {
+        padding: 20px;
+      }
+
+      .title {
+        font-size: 1.5rem;
+      }
+
+      .subtitle {
+        font-size: 0.85rem;
+        margin-bottom: 2rem;
+      }
+
+      .open-btn {
+        font-size: 1.1rem;
+        padding: 18px 40px;
+      }
+
+      .slot-machine {
+        padding: 15px;
+        border-radius: 12px;
+      }
+
+      .slots-container {
+        gap: 8px;
+      }
+
+      .slot-column {
+        width: 90px;
+        height: 280px;
+      }
+
+      .slot-column::before,
+      .slot-column::after {
+        height: 60px;
+      }
+
+      .slot-card {
+        width: 75px;
+        height: 75px;
+        margin: 8px auto;
+        font-size: 0.7rem;
+      }
+
+      .slot-card.cc-card {
+        font-size: 0.75rem;
+      }
+
+      .center-line {
+        height: 90px;
+      }
+
+      .winner-text {
+        font-size: 3rem;
+      }
+
+      .gift-reveal {
+        padding: 15px;
+      }
+
+      .gift-card {
+        padding: 30px 25px;
+        border-radius: 16px;
+        margin: 15px;
+        max-width: calc(100% - 30px);
+      }
+
+      .cc-logo {
+        font-size: 1.3rem;
+        margin-bottom: 1rem;
+      }
+
+      .legendary-badge {
+        font-size: 0.65rem;
+        padding: 6px 12px;
+        letter-spacing: 0.2em;
+        margin-bottom: 1rem;
+      }
+
+      .gift-title {
+        font-size: 1.2rem;
+      }
+
+      .gift-value {
+        font-size: 2rem;
+      }
+
+      .gift-subtitle {
+        font-size: 0.85rem;
+        margin-bottom: 1.5rem;
+      }
+
+      .referral-link {
+        font-size: 0.7rem;
+        padding: 12px 15px;
+        margin-bottom: 1rem;
+      }
+
+      .copy-btn {
+        font-size: 0.9rem;
+        padding: 12px 30px;
+        width: 100%;
+      }
+
+      .merry-xmas {
+        font-size: 0.95rem;
+      }
+    }
+
+    /* Extra small phones */
+    @media (max-width: 360px) {
+      .slot-column {
+        width: 75px;
+        height: 240px;
+      }
+
+      .slot-card {
+        width: 62px;
+        height: 62px;
+        margin: 6px auto;
+        font-size: 0.6rem;
+      }
+
+      .center-line {
+        height: 75px;
+      }
+
+      .gift-value {
+        font-size: 1.7rem;
+      }
+
+      .referral-link {
+        font-size: 0.6rem;
+      }
+    }
   </style>
 </head>
 <body>
@@ -662,7 +800,9 @@
     function spinSlot(stripElement, duration, stopPosition) {
       return new Promise(resolve => {
         let position = 0;
-        const speed = 50;
+        const isMobile = window.innerWidth <= 500;
+        const speed = isMobile ? 40 : 50;
+        const resetThreshold = isMobile ? -1800 : -2400;
         const startTime = Date.now();
 
         function animate() {
@@ -670,7 +810,7 @@
 
           if (elapsed < duration) {
             position -= speed;
-            if (position < -2400) position = 0;
+            if (position < resetThreshold) position = 0;
             stripElement.style.transform = `translateY(${position}px)`;
             requestAnimationFrame(animate);
           } else {
@@ -764,7 +904,13 @@
 
       shake();
 
-      const stopPos = -2280;
+      // Calculate stop position based on screen size (card height + margin)
+      const isMobile = window.innerWidth <= 500;
+      const isExtraSmall = window.innerWidth <= 360;
+      let cardHeight = 120; // default: 100px height + 20px margin
+      if (isExtraSmall) cardHeight = 74; // 62px + 12px
+      else if (isMobile) cardHeight = 91; // 75px + 16px
+      const stopPos = -(20 * cardHeight) + (cardHeight * 1.5); // Center winner card
 
       await Promise.all([
         spinSlot(strip1, 2000, stopPos),
